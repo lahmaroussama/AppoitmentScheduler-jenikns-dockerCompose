@@ -7,8 +7,7 @@ services:
     volumes:
       - jenkins_data:/var/jenkins_home
     networks:
-      devnet:
-        driver: bridge
+      - test
 
   nexus:
     image: sonatype/nexus3
@@ -17,14 +16,14 @@ services:
     volumes:
       - nexus_data:/nexus-data
     networks:
-      - devnet
+      - test
 
   sonarqube:
     image: sonarqube
     ports:
       - "9000:9000"
     networks:
-      - devnet
+      - test
 
   sql-server:
     image: mysql:5.7
@@ -34,7 +33,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - devnet
+      - test
 
   spring-app:
     build:
@@ -47,7 +46,7 @@ services:
       - sonarqube
       - jenkins
     networks:
-      - devnet
+      - test
 
 networks:
   my-network:
