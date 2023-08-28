@@ -1,35 +1,60 @@
-version: '3.7'
-
+version: '3'
 services:
-
-  backend:
-    image: slabiak/appointmentscheduler:0.0.1-SNAPSHOT
+  jenkins:
+    image: jenkins/jenkins
     ports:
       - "8080:8080"
-    restart: always
-    depends_on:
-      - appointmentscheduler_db
+    volumes:
+      - jenkins_data:/var/jenkins_home
     networks:
-      - appointmentscheduler_network
+      devnet:
+        driver: bridge
 
-  appointmentscheduler_db:
+  nexus:
+    image: sonatype/nexus3
+    ports:
+      - "8081:8081"
+    volumes:
+      - nexus_data:/nexus-data
+    networks:
+      - devnet
+
+  sonarqube:
+    image: sonarqube
+    ports:
+      - "9000:9000"
+    networks:
+      - devnet
+
+  sql-server:
     image: mysql:5.7
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
     ports:
       - "3306:3306"
-    restart: always
-    environment:
-      MYSQL_DATABASE: appointmentscheduler
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root_pass
-    volumes:
-      - appointmentscheduler_volume:/var/lib/mysql
-      - ./src/main/resources:/docker-entrypoint-initdb.d
     networks:
-      - appointmentscheduler_network
+      - devnet
 
-volumes:
-  appointmentscheduler_volume:
+  spring-app:
+    build:
+      context: ./spring-app
+    ports:
+      - "8082:8080"
+    depends_on:
+      - sql-server
+      - nexus
+      - sonarqube
+      - jenkins
+    networks:
+      - devnet
 
 networks:
-  appointmentscheduler_network:
+  my-network:
+
+volumes:
+  jenkins_data:
+  nexus_data:
+
+
+  
