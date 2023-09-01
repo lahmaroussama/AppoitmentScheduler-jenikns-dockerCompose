@@ -28,24 +28,8 @@ pipeline {
 
             }
         }
-        
-            stage('SonarQube Scanner') {
-            steps {
-                // Use the specified Maven installation
-            withSonarQubeEnv('sq1') {
-                 script{
-                    def mavenHome = tool 'maven1'
-                    sh "${mavenHome}/bin/mvn sonar:sonar"
-                 }
 
-
-                }
-            }
-        }
-
-
-
-       stage("Publish to Nexus Repository Manager") {
+         stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
                     pom = readMavenPom file: "pom.xml";
@@ -80,6 +64,24 @@ pipeline {
                 }
             }
         }
+        
+            stage('SonarQube Scanner') {
+            steps {
+                // Use the specified Maven installation
+            withSonarQubeEnv('sq1') {
+                 script{
+                    def mavenHome = tool 'maven1'
+                    sh "${mavenHome}/bin/mvn sonar:sonar"
+                 }
+
+
+                }
+            }
+        }
+
+
+
+      
         
     
          stage('Build Docker Image') {
