@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     
-                  sh 'docker run -d -p 8082:80 --name my-deployed-container oussama00001/testjenkins'
+                  sh 'docker run -d -p 8082:80 --name my-deployed-container --network oussama_my-network oussama00001/testjenkins'
                     
                 }
             }
