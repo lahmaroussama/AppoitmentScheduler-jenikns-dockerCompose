@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/appointmentscheduler-1.0.4.jar ./app.jar
 
 # Expose the port your application will run on (change to your app's port)
-EXPOSE 8080
+EXPOSE ${SERVER_PORT}
 
 # Define the command to run your Spring Boot application
 CMD ["java", "-jar", "app.jar"]
